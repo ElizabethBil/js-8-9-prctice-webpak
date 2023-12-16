@@ -33,3 +33,76 @@
 
 
 import './styles/style.css'
+
+// СТВОРИ СПИСОК ЗАМІТОК НА ДЕНЬ:
+
+
+// 1)ПОЛУЧИТИ ДОСТУП ДО ЕЛЕМЕНТІВ ФОРМИ, ПРИ НАТИСКАННЯ НА КНОПОЧКУ ADD
+const form = document.querySelector("#form");
+const input = document.querySelector("#input");
+
+
+// 2)НА ОСНОВІ ДАНИХ ЯКІ МИ ВЗЯЛИ З ФОРМИ ВІДМАЛЮВАТИ ЕЛЕМЕНТИ СПИСКУ НА ЕКРАН
+const list = document.querySelector(".list");
+
+// form.addEventListener("submit", submitHandler)
+// function submitHandler(e) {
+//     e.preventDefault();
+//     const item = input.value;
+//     console.log(item);
+// }
+
+form.addEventListener("submit", e => {
+    // 1)
+    e.preventDefault();
+
+    const item = input.value;
+    console.log(item);
+
+    // 2)
+    const listItem = document.createElement("li");
+    listItem.textContent = item;
+    list.append(listItem)
+
+    // 3)
+    const listItems = JSON.parse(localStorage.getItem("listItems")) || [];
+    listItems.push(item);
+
+    addToLocalStorage(listItems);
+
+    input.value = "";
+})
+
+
+// 3)ДОДАЙ ЦЕЙ СПИСОК ДО ЛОКАЛ СТОРЕДЖ
+
+function addToLocalStorage(listItema) {
+    localStorage.setItem("listItems", JSON.stringify(listItema))
+}
+
+
+// 4)ДОДАЙ ДОДАТКОВИЙ ФУНКЦІОНАЛ, ЩОБ ПРИ ОНОВЛЕННІ СТОРІНКИ СПИСОК НЕ ВИДАЛЯВСЯ
+
+function readLocalStorage() {
+    const isInStorage = localStorage.getItem("listItems");
+
+    if (isInStorage) {
+        const listItems = JSON.parse(isInStorage);
+        for (const el of listItems) {
+            const listItem = document.createElement("li");
+            listItem.textContent = el;
+            list.append(listItem)
+        };
+    }
+}
+readLocalStorage()
+
+
+// 5)СТВОРЮЄМО КНОПОЧКУ, ПРИ ЯКОМУ БУДЕ ОЧИЩАВСЯ ЛОКАЛ СТОРЕДЖ
+
+const clearStringBtn = document.querySelector(".clear");
+
+clearStringBtn.addEventListener("click", () => {
+    localStorage.removeItem("listItems");
+    list.innerHTML = "";
+})
